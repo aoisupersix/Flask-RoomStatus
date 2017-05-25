@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
 
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, g
 from datetime import datetime
 from pytz import timezone
 import json
@@ -36,8 +36,11 @@ def add():
         killinRoom()
         num = int((request.json['num']))
         for i in range(num):
-            inRoom.append(timezone('Asia/Tokyo').localize(datetime.now()))
-        return jsonify(ResultSet=json.dumps(getReturn(), default=support_datetime_default))
+            inRoom.append(datetime.now(timezone('Asia/Tokyo')))
+
+        print "add:"
+        showStatus()
+        return jsonify(ResultSet=json.dumps(getReturn()))
     else:
         #エラー
         return redirect(url_for('index'))
@@ -50,6 +53,7 @@ def add():
 @app.route('/addTime', methods=['POST'])
 def addTime():
     if request.method == 'POST':
+        killinRoom()
         unixtime = int((request.json['unixtime']))
         addDate = datetime.fromtimestamp(unixtime, tz=timezone('Asia/Tokyo'))
         print "time:" + str(addDate)
@@ -62,7 +66,9 @@ def addTime():
                 inRoom.append(addDate)
         else:
             inRoom.append(addDate)
-        return jsonify(ResultSet=json.dumps(getReturn(), default=support_datetime_default))
+        print "addTime:"
+        showStatus()
+        return jsonify(ResultSet=json.dumps(getReturn()))
     else:
         #エラー
         return redirect(url_for('index'))
@@ -77,6 +83,7 @@ def addTime():
 @app.route('/rm', methods=['POST'])
 def remove():
     if request.method == 'POST':
+        killinRoom()
         num = int((request.json['num']))
         if len(inRoom) > 0:
             if num == 0:
@@ -85,7 +92,9 @@ def remove():
             else:
                 #全削除
                 del inRoom[:]
-        return jsonify(ResultSet=json.dumps(getReturn(), default=support_datetime_default))
+        print "rm:"
+        showStatus()
+        return jsonify(ResultSet=json.dumps(getReturn()))
     else:
         #エラー
         return redirect(url_for('index'))
@@ -93,13 +102,15 @@ def remove():
 
 #生存期間を超えた人を消す
 def killinRoom():
-    print "killinRoom!"
     if len(inRoom) >= 1:
-        delta = timezone('Asia/Tokyo').localize(datetime.now()) - inRoom[0]
+        delta = datetime.now(timezone('Asia/Tokyo')) - inRoom[0]
         if delta.total_seconds() > lifetime:
             #削除
+            print "kill!!!!!"
             inRoom.pop(0)
             killinRoom()
+    print "killinRoom:"
+    showStatus()
 
 #レスポンスを作成
 def getReturn():
@@ -110,6 +121,13 @@ def getReturn():
     ret.update({"inRoomNum": len(inRoom)})
     ret.update({"inRoom": strRoom})
     return ret
+
+#inRoomを表示
+def showStatus():
+    print "ROOM_STATUS"
+    print "inRoom:" + str(len(inRoom))
+    for i in inRoom:
+        print i.strftime('%Y-%m-%d %H:%M:%S')
 
 #jsonifyで対応する型を追加
 def support_datetime_default(o):
