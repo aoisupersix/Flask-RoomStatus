@@ -39,7 +39,7 @@ def add():
         num = int((request.json['num']))
         for i in range(num):
             inRoom.append(timezone('Asia/Tokyo').localize(datetime.now()))
-        return jsonify(ResultSet=json.dumps(getReturn(), default=support_datetime_default))
+        return jsonify(ResultSet=json.dumps(getReturn()))
     else:
         #エラー
         return redirect(url_for('index'))
@@ -64,7 +64,7 @@ def addTime():
                 inRoom.append(addDate)
         else:
             inRoom.append(addDate)
-        return jsonify(ResultSet=json.dumps(getReturn(), default=support_datetime_default))
+        return jsonify(ResultSet=json.dumps(getReturn()))
     else:
         #エラー
         return redirect(url_for('index'))
@@ -87,7 +87,7 @@ def remove():
             else:
                 #全削除
                 del inRoom[:]
-        return jsonify(ResultSet=json.dumps(getReturn(), default=support_datetime_default))
+        return jsonify(ResultSet=json.dumps(getReturn()))
     else:
         #エラー
         return redirect(url_for('index'))
