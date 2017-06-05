@@ -118,7 +118,6 @@ function updateLayout(ret) {
  *  n:追加する人数
  */
 function add(n) {
-  alert("add" + n);
   var num = JSON.stringify({"num": n});
   $.ajax({
     type: 'POST',
