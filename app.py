@@ -32,6 +32,7 @@ def index():
 ###################################
 @app.route('/add', methods=['POST'])
 def add():
+    global inRoom
     if request.method == 'POST':
         killinRoom()
         num = int((request.json['num']))
@@ -52,6 +53,7 @@ def add():
 ###################################
 @app.route('/addTime', methods=['POST'])
 def addTime():
+    global inRoom
     if request.method == 'POST':
         killinRoom()
         unixtime = int((request.json['unixtime']))
@@ -82,6 +84,7 @@ def addTime():
 ###################################
 @app.route('/rm', methods=['POST'])
 def remove():
+    global inRoom
     if request.method == 'POST':
         killinRoom()
         num = int((request.json['num']))
@@ -102,6 +105,7 @@ def remove():
 
 #生存期間を超えた人を消す
 def killinRoom():
+    global inRoom
     if len(inRoom) >= 1:
         delta = datetime.now(timezone('Asia/Tokyo')) - inRoom[0]
         if delta.total_seconds() > lifetime:
