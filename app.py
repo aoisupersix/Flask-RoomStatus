@@ -36,7 +36,7 @@ def add():
         killinRoom()
         num = int((request.json['num']))
         for i in range(num):
-            inRoom.append(timezone('Asia/Tokyo').localize(datetime.now()))
+            inRoom.append(datetime.now(timezone('Asia/Tokyo')))
 
             print "add:"
             showStatus()
@@ -53,6 +53,7 @@ def add():
 @app.route('/addTime', methods=['POST'])
 def addTime():
     if request.method == 'POST':
+        killinRoom()
         unixtime = int((request.json['unixtime']))
         addDate = datetime.fromtimestamp(unixtime, tz=timezone('Asia/Tokyo'))
         print "time:" + str(addDate)
@@ -82,6 +83,7 @@ def addTime():
 @app.route('/rm', methods=['POST'])
 def remove():
     if request.method == 'POST':
+        killinRoom()
         num = int((request.json['num']))
         if len(inRoom) > 0:
             if num == 0:
@@ -101,7 +103,7 @@ def remove():
 #生存期間を超えた人を消す
 def killinRoom():
     if len(inRoom) >= 1:
-        delta = timezone('Asia/Tokyo').localize(datetime.now()) - inRoom[0]
+        delta = datetime.now(timezone('Asia/Tokyo')) - inRoom[0]
         if delta.total_seconds() > lifetime:
             #削除
             inRoom.pop(0)
