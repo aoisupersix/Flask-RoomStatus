@@ -106,9 +106,10 @@ def killinRoom():
         delta = datetime.now(timezone('Asia/Tokyo')) - inRoom[0]
         if delta.total_seconds() > lifetime:
             #削除
+            print "kill!!!!!"
             inRoom.pop(0)
             killinRoom()
-    print "kill:"
+    print "killinRoom:"
     showStatus()
 
 #レスポンスを作成
