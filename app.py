@@ -32,11 +32,11 @@ def index():
 ###################################
 @app.route('/add', methods=['POST'])
 def add():
+    global inRoom
     if request.method == 'POST':
         killinRoom()
         num = int((request.json['num']))
         for i in range(num):
-            global inRoom
             inRoom.append(datetime.now(timezone('Asia/Tokyo')))
 
         print "add:"
@@ -53,6 +53,7 @@ def add():
 ###################################
 @app.route('/addTime', methods=['POST'])
 def addTime():
+    global inRoom
     if request.method == 'POST':
         killinRoom()
         unixtime = int((request.json['unixtime']))
@@ -61,14 +62,11 @@ def addTime():
         if len(inRoom) > 0:
             for i, room in enumerate(inRoom):
                 if addDate <= room:
-                    global inRoom
                     inRoom.insert(i, addDate)
                     break
             else:
-                global inRoom
                 inRoom.append(addDate)
         else:
-            global inRoom
             inRoom.append(addDate)
         print "addTime:"
         showStatus()
@@ -93,11 +91,9 @@ def remove():
         if len(inRoom) > 0:
             if num == 0:
                 #一削除
-                global inRoom
                 inRoom.pop(0)
             else:
                 #全削除
-                global inRoom
                 del inRoom[:]
         print "rm:"
         showStatus()
@@ -109,12 +105,12 @@ def remove():
 
 #生存期間を超えた人を消す
 def killinRoom():
+    global inRoom
     if len(inRoom) >= 1:
         delta = datetime.now(timezone('Asia/Tokyo')) - inRoom[0]
         if delta.total_seconds() > lifetime:
             #削除
             print "kill!!!!!"
-            global inRoom
             inRoom.pop(0)
             killinRoom()
     print "killinRoom:"
