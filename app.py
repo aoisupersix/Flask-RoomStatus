@@ -32,13 +32,14 @@ def index():
 ###################################
 @app.route('/add', methods=['POST'])
 def add():
-    print "add:"
-    showStatus()
     if request.method == 'POST':
         killinRoom()
         num = int((request.json['num']))
         for i in range(num):
             inRoom.append(timezone('Asia/Tokyo').localize(datetime.now()))
+
+            print "add:"
+            showStatus()
         return jsonify(ResultSet=json.dumps(getReturn()))
     else:
         #エラー
@@ -64,6 +65,8 @@ def addTime():
                 inRoom.append(addDate)
         else:
             inRoom.append(addDate)
+        print "addTime:"
+        showStatus()
         return jsonify(ResultSet=json.dumps(getReturn()))
     else:
         #エラー
@@ -87,6 +90,8 @@ def remove():
             else:
                 #全削除
                 del inRoom[:]
+        print "rm:"
+        showStatus()
         return jsonify(ResultSet=json.dumps(getReturn()))
     else:
         #エラー
@@ -95,13 +100,14 @@ def remove():
 
 #生存期間を超えた人を消す
 def killinRoom():
-    print "killinRoom!"
     if len(inRoom) >= 1:
         delta = timezone('Asia/Tokyo').localize(datetime.now()) - inRoom[0]
         if delta.total_seconds() > lifetime:
             #削除
             inRoom.pop(0)
             killinRoom()
+    print "kill:"
+    showStatus()
 
 #レスポンスを作成
 def getReturn():
