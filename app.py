@@ -32,6 +32,8 @@ def index():
 ###################################
 @app.route('/add', methods=['POST'])
 def add():
+    print "add:"
+    showStatus()
     if request.method == 'POST':
         killinRoom()
         num = int((request.json['num']))
@@ -110,6 +112,11 @@ def getReturn():
     ret.update({"inRoomNum": len(inRoom)})
     ret.update({"inRoom": strRoom})
     return ret
+
+#inRoomを表示
+def showStatus():
+    print "ROOM_STATUS"
+    print "inRoom:" + str(inRoom)
 
 #jsonifyで対応する型を追加
 def support_datetime_default(o):
