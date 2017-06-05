@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PC室の混雑状況</title>
+    <!--BootStrap -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!--Ajax -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!--Bootstrap -->
+    <script src="/static/js/bootstrap.min.js"></script>
+    <!--Server script -->
+    <script src="/static/js/index.js"></script>
+    <div class="form">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h1>現在のパソコン室混雑状況</h1>
+            <hr id="body"/>
+            <h2 class="text-primary">
+              利用人数:　
+              <strong>
+                <span id="inRoomNum"></span>
+              </strong>
+              <small>
+                / <span id="capacity"></span> 人
+              </small>
+              　利用率:　
+              <span id="utilization"></span>
+              <small>
+                %
+              </small>
+            </h2>
+            <table class="table table-striped" id="roomStatus">
+              <!--利用者リストテーブル -->
+              <tr>
+                <th>Id</th>
+                <th>入室時刻</th>
+              </tr>
+            </table>
+            <ul class="nav nav-pills">
+              <!--手動追加ドロップダウン -->
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                  手動追加 <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" id="DropDown-Add">
+                  <li class="DropDown-Add"><a href="#">一人追加</a></li>
+                  <li class="DropDown-Add"><a href="#.bs-example-modal-sm">任意人数追加</a></li>
+                  <li class="DropDown-Add"><a href="#">任意時刻追加</a></li>
+                </ul>
+              </li>
+              <!--手動削除ドロップダウン -->
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                  手動削除 <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" id="DropDown-Remove">
+                  <li class="DropDown-Remove"><a href="#">一人削除</a></li>
+                  <li class="DropDown-Remove"><a href="#">全削除</a></li>
+                </ul>
+              </li>
+              <!--統計情報ボタン -->
+              <li>
+                <a href="#">統計情報</a>
+              </li>
+              <!--設定ボタン -->
+              <li>
+                <a href="#">設定</a>
+              </li>
+            </ul>
+          </div>
+          <!--任意人数追加モーダルここから-->
+          <div id="addNumModal" class="modal fade">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                          <h4 class="modal-title">任意人数追加</h4>
+                      </div>
+                      <div class="modal-body">
+                          追加する人数を入力してください。<br>
+                          <input type="number" id="InputAddNum" name="InputAddNum" value="1" min="1">
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+                          <button type="button" class="btn btn-primary" id="addNum-Accept">追加</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!--任意人数追加モーダルここまで-->
+          <!--任意時刻追加モーダルここから-->
+          <div id="addTimeModal" class="modal fade">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                          <h4 class="modal-title">任意時刻追加</h4>
+                      </div>
+                      <div class="modal-body">
+                          追加する時刻を以下の形式で入力してください。日付は固定です。<br>
+                          <span id="nowday"></span>
+                          :<code>HH:MM:SS</code>->
+                          <input type="text" id="InputTime" name="InputTime" value="11:11:11">
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+                          <button type="button" class="btn btn-primary" id="addTime-Accept">追加</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!--任意人数追加モーダルここまで-->
+        </div>
+      </div>
+    </div>
+</html>
