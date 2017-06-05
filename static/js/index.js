@@ -57,7 +57,7 @@ function init() {
         //モーダルビュー表示
         $("#addTimeModal").modal('show');
         var now = new Date();
-        $("#nowday").text(now.getFullYear() + "/" + (now.getMonth() + 1) + "/" + now.getDay());
+        $("#nowday").text(now.getFullYear() + "/" + (now.getMonth() + 1) + "/" + now.getDate());
         $("#InputTime").val(now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds());
         break
     }
