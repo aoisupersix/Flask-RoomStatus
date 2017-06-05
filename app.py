@@ -39,8 +39,8 @@ def add():
             global inRoom
             inRoom.append(datetime.now(timezone('Asia/Tokyo')))
 
-            print "add:"
-            showStatus()
+        print "add:"
+        showStatus()
         return jsonify(ResultSet=json.dumps(getReturn()))
     else:
         #エラー
@@ -133,7 +133,9 @@ def getReturn():
 #inRoomを表示
 def showStatus():
     print "ROOM_STATUS"
-    print "inRoom:" + str(inRoom)
+    print "inRoom:" + str(len(inRoom))
+    for i in inRoom:
+        print i.strftime('%Y-%m-%d %H:%M:%S')
 
 #jsonifyで対応する型を追加
 def support_datetime_default(o):
