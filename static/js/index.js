@@ -1,7 +1,7 @@
 $(window).load(init());
 
 function init() {
-  //update();
+  update();
   /*
    *任意人数追加モーダルビュー
    */

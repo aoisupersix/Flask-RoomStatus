@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
 
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, g
 from datetime import datetime
 from pytz import timezone
 import json
@@ -13,6 +13,14 @@ inRoom = []
 capacity = 30
 #生存期間[s]
 lifetime = 60 * 60
+
+@app.before_first_request
+def first_request():
+    print "first_request"
+
+@app.before_request
+def before_request():
+    print "before_request"
 
 ###################################
 #ルート
@@ -32,7 +40,6 @@ def index():
 ###################################
 @app.route('/add', methods=['POST'])
 def add():
-    global inRoom
     if request.method == 'POST':
         killinRoom()
         num = int((request.json['num']))
@@ -53,7 +60,6 @@ def add():
 ###################################
 @app.route('/addTime', methods=['POST'])
 def addTime():
-    global inRoom
     if request.method == 'POST':
         killinRoom()
         unixtime = int((request.json['unixtime']))
@@ -84,7 +90,6 @@ def addTime():
 ###################################
 @app.route('/rm', methods=['POST'])
 def remove():
-    global inRoom
     if request.method == 'POST':
         killinRoom()
         num = int((request.json['num']))
@@ -105,7 +110,6 @@ def remove():
 
 #生存期間を超えた人を消す
 def killinRoom():
-    global inRoom
     if len(inRoom) >= 1:
         delta = datetime.now(timezone('Asia/Tokyo')) - inRoom[0]
         if delta.total_seconds() > lifetime:
