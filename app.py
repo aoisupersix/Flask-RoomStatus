@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
 
-from flask import Flask, render_template, request, redirect, url_for, jsonify, g
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 from datetime import datetime
 from pytz import timezone
 import json
