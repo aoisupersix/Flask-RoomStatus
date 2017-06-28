@@ -1,11 +1,36 @@
 #-*- coding:utf-8 -*-
-
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from datetime import datetime
 from pytz import timezone
 import json
+#以下データベース関係
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, Integer, DateTime, ForeignKey
+from sqlalchemy.orm import relationship, backref
 
 app = Flask(__name__)
+#デバッグ
+app.config['DEBUG'] = True
+#データベースを指定
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Entry.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+db = SQLAlchemy(app)
+
+###################################
+#データベース
+###################################
+class Entry(db.Model):
+    #入室記録テーブル
+    __tablename__ = "Entry"
+    id = db.Column(Integer, primary_key=True)
+    time = Column(db.DateTime)
+
+    #初期化
+    def __init__(self, time):
+        self.time = time
+
+    def __repr__(self):
+        return '<Time %r>' % self.time
 
 #部屋にいる人
 inRoom = []
@@ -16,11 +41,7 @@ lifetime = 60 * 60
 
 @app.before_first_request
 def first_request():
-    print "first_request"
-
-@app.before_request
-def before_request():
-    print "before_request"
+    db.create_all()
 
 ###################################
 #ルート
@@ -44,7 +65,9 @@ def add():
         killinRoom()
         num = int((request.json['num']))
         for i in range(num):
-            inRoom.append(datetime.now(timezone('Asia/Tokyo')))
+            d = datetime.now(timezone('Asia/Tokyo'))
+            inRoom.append(d)
+            addRecord(d)
 
         print "add:"
         showStatus()
@@ -64,6 +87,7 @@ def addTime():
         killinRoom()
         unixtime = int((request.json['unixtime']))
         addDate = datetime.fromtimestamp(unixtime, tz=timezone('Asia/Tokyo'))
+        addRecord(addDate)
         print "time:" + str(addDate)
         if len(inRoom) > 0:
             for i, room in enumerate(inRoom):
@@ -107,6 +131,15 @@ def remove():
         #エラー
         return redirect(url_for('index'))
 
+###################################
+#統計情報取得
+#GET:
+#   ->hour
+###################################
+@app.route('/getHour', methods=['GET'])
+def getHour():
+    if request.method == 'GET':
+        return render_template('statistics.html', hours=getRecord())
 
 #生存期間を超えた人を消す
 def killinRoom():
@@ -136,6 +169,25 @@ def showStatus():
     print "inRoom:" + str(len(inRoom))
     for i in inRoom:
         print i.strftime('%Y-%m-%d %H:%M:%S')
+
+###################################
+#データベース関連
+###################################
+#レコード追加
+def addRecord(date):
+    add = Entry(date)
+    print "addDatabase:" + str(add)
+    db.session.add(add)
+    db.session.commit()
+#レコード取得
+def getRecord():
+    rec = Entry.query.all()
+    hours = [0 for i in range(24)]
+    for r in rec:
+        hours[r.time.hour] += 1
+    print "Hours:" + str(hours)
+    print "Record:" + str(rec)
+    return hours
 
 #jsonifyで対応する型を追加
 def support_datetime_default(o):

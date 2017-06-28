@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PC室の混雑状況: 統計情報</title>
+    <!--BootStrap -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <!--Ajax -->
+    <script src="/static/js/ajax.js"></script>
+    <!--Bootstrap -->
+    <script src="/static/js/bootstrap.min.js"></script>
+    <!--Chart script -->
+    <script src="/static/js/chart.js"></script>
+    <!--Server script -->
+    <script src="/static/js/statistics.js"></script>
+    <script type="text/javascript">
+      setRecord({{hours}});
+    </script>
+  </head>
+  <body>
+    <div class="form">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h1>統計情報</h1>
+            <hr id="body"/>
+            <p id="message">自動では更新されません。手動で更新してください。</p>
+            <!--Chartここから-->
+            <canvas id="statistics" width="400" height="250">　</canvas>
+            <!--統計情報-->
+            <p id="sum"></p>
+            <ul class="nav nav-pills">
+              <!--戻るボタン -->
+              <li>
+                <a href="/">戻る</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+</html>
