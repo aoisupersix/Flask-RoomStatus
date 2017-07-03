@@ -36,6 +36,12 @@ function init() {
       });
     }
   });
+  /*
+   *設定モーダルビュー
+   */
+  $(document).on('click', "#setting-Accept", function() {
+    $("#addNumModal").modal('hide');
+  });
 
   /*
    *手動追加ドロップダウンクリック
@@ -78,7 +84,14 @@ function init() {
         remove(REMOVE_ALL);
         break
     }
-  })
+  });
+
+  /*
+   *設定ボタンクリック
+   */
+  $(document).on('click', "#SettingButton", function() {
+    $("#settingModal").modal('show');
+  });
 }
 
 /*

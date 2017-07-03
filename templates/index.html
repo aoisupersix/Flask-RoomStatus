@@ -67,8 +67,8 @@
                 <a href="/getHour">統計情報</a>
               </li>
               <!--設定ボタン -->
-              <li>
-                <a href="layout.html">設定</a>
+              <li id="SettingButton">
+                <a href="#">設定</a>
               </li>
             </ul>
           </div>
@@ -114,6 +114,32 @@
               </div>
           </div>
           <!--任意人数追加モーダルここまで-->
+          <!--設定モーダルここから-->
+          <div id="settingModal" class="modal fade">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                          <h4 class="modal-title">設定</h4>
+                      </div>
+                      <div class="modal-body">
+                          システムの設定を変更します。<br>デバイス側の設定はタクトスイッチを押すと更新されます。
+                          <h4 class="primary">サーバ側設定</h4>
+                          定員(Capacity):<input type="number" id="InputCapacity" name="InputCapacity" value="1" min="1"><code>[人]</code><br>
+                          生存期間(LifeTime):<input type="number" id="InputLifeTime" name="InputLifeTime" value="20" min="1"><code>[s]</code>
+                          <hr />
+                          <h4 class="primary">デバイス側設定</h4>
+                          距離センサの判定待ち時間(SleepTime):<input type="number" id="InputSleepTime" name="InputSleepTime" step="0.1" value="1" min="1"><code>[s]</code><br>
+                          判定間隔(CoolTime):<input type="number" id="InputCoolTime" name="InputCoolTime" step="0.1" value="1" min="1"><code>[s]</code><br>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+                          <button type="button" class="btn btn-primary" id="setting-Accept">更新</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <!--設定モーダルここまで-->
         </div>
       </div>
     </div>
