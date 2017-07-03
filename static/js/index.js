@@ -1,4 +1,5 @@
 $(window).load(init());
+var updateTime = 2000  //更新間隔[s]
 
 function init() {
   update();
@@ -40,7 +41,23 @@ function init() {
    *設定モーダルビュー
    */
   $(document).on('click', "#setting-Accept", function() {
-    $("#addNumModal").modal('hide');
+    updateTime = $("#InputUpdateTime").val();
+    var data = JSON.stringify({
+      "capacity": $("#InputCapacity").val(),
+      "lifetime": $("#InputLifeTime").val(),
+      "sleepTime": $("#InputSleepTime").val(),
+      "coolTime": $("#InputCoolTime").val()
+    });
+    $.ajax({
+      type: 'POST',
+      url:'/setting',
+      contentType: 'application/json',
+      data: data,
+      success:function(ret){
+        add(0);
+      }
+    });
+    $("#settingModal").modal('hide');
   });
 
   /*
@@ -90,7 +107,24 @@ function init() {
    *設定ボタンクリック
    */
   $(document).on('click', "#SettingButton", function() {
-    $("#settingModal").modal('show');
+    //サーバから設定取得
+    $.ajax({
+      type: 'GET',
+      url:'/setting',
+      contentType: 'application/json',
+      success:function(ret){
+        var cap = JSON.parse(ret.ResultSet).capacity;
+        var life = JSON.parse(ret.ResultSet).lifetime;
+        var sleep = JSON.parse(ret.ResultSet).sleepTime;
+        var cool = JSON.parse(ret.ResultSet).coolTime;
+        $("#InputCapacity").val(cap);
+        $("#InputLifeTime").val(life);
+        $("#InputUpdateTime").val(updateTime);
+        $("#InputSleepTime").val(sleep);
+        $("#InputCoolTime").val(cool);
+        $("#settingModal").modal('show');
+      }
+    });
   });
 }
 
@@ -99,7 +133,7 @@ function init() {
  */
  function update() {
    add(0);
-   setTimeout(function() {update()}, 2000);
+   setTimeout(function() {update()}, updateTime);
  }
 
 /*

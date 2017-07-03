@@ -33,10 +33,9 @@ class Entry(db.Model):
         return '<Time %r>' % self.time
 
 ###################################
-#設定(シングルトン)
+#設定
 ###################################
 class Setting():
-    _instance = None
     #定員
     capacity = 30
     #生存期間[s]
@@ -44,11 +43,6 @@ class Setting():
     #デバイス側の設定
     sleepTime = 3.0
     coolTime = 3.0
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
 
     def getDict(self):
         return {"capacity": self.capacity, "lifetime": self.lifeTime, "sleepTime": self.sleepTime, "coolTime": self.coolTime}
@@ -58,9 +52,13 @@ class Setting():
         self.lifeTime = life
         self.sleepTime = sleep
         self.coolTime = cool
+        print "self.capacity:" + str(self.capacity)
+
 
 #部屋にいる人の管理
 inRoom = []
+#設定
+settings = Setting()
 
 @app.before_first_request
 def first_request():
@@ -179,8 +177,9 @@ def setting():
         try:
             capacity = int((request.json['capacity']))
             lifetime = int((request.json['lifetime']))
-            sleepTime = int((request.json['sleepTime']))
-            coolTime = int((request.json['coolTime']))
+            sleepTime = float((request.json['sleepTime']))
+            coolTime = float((request.json['coolTime']))
+            settings.setSettings(capacity, lifetime, sleepTime, coolTime)
         except Exception as e:
             print "エラー:"
             print 'type:' + str(type(e))
@@ -192,7 +191,7 @@ def setting():
 def killinRoom():
     if len(inRoom) >= 1:
         delta = datetime.now(timezone('Asia/Tokyo')) - inRoom[0]
-        lifetime = Setting().lifeTime
+        lifetime = settings.lifeTime
         if delta.total_seconds() > lifetime:
             #削除
             print "kill!!!!!"
@@ -206,9 +205,10 @@ def getReturn():
     strRoom = []
     for i in inRoom:
         strRoom.append(i.strftime('%Y-%m-%d %H:%M:%S'))
-    ret = Setting().getDict()
+    ret = settings.getDict()
     ret.update({"inRoomNum": len(inRoom)})
     ret.update({"inRoom": strRoom})
+    print "Return:" + str(ret)
     return ret
 
 #inRoomを表示
