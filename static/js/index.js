@@ -145,9 +145,9 @@ function updateLayout(ret) {
   var inroomNum = JSON.parse(ret.ResultSet).inRoomNum;
   var inRoom = JSON.parse(ret.ResultSet).inRoom;
   var percent = Math.round((parseFloat(inroomNum) / parseInt(cap)) * 100);
-  $("#inRoomNum").text(inroomNum);
-  $("#capacity").text(cap);
-  $("#utilization").text(percent);
+  $("#inRoomNum").countTo(inroomNum, {"duration": 0.5, "min_steps": 30});
+  $("#capacity").countTo(cap, {"duration": 0.5, "min_steps": 30});
+  $("#utilization").countTo(percent, {"duration":0.5, "min_steps": 30});
   //テーブル削除
   $("#roomStatus").find("tr:gt(0)").remove();
   //テーブル追加
