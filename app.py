@@ -32,12 +32,35 @@ class Entry(db.Model):
     def __repr__(self):
         return '<Time %r>' % self.time
 
-#部屋にいる人
+###################################
+#設定(シングルトン)
+###################################
+class Setting():
+    _instance = None
+    #定員
+    capacity = 30
+    #生存期間[s]
+    lifeTime = 60 * 60
+    #デバイス側の設定
+    sleepTime = 3.0
+    coolTime = 3.0
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def getDict(self):
+        return {"capacity": self.capacity, "lifetime": self.lifeTime, "sleepTime": self.sleepTime, "coolTime": self.coolTime}
+
+    def setSettings(self, cap, life, sleep, cool):
+        self.capacity = cap
+        self.lifeTime = life
+        self.sleepTime = sleep
+        self.coolTime = cool
+
+#部屋にいる人の管理
 inRoom = []
-#定員
-capacity = 30
-#生存期間[s]
-lifetime = 60 * 60
 
 @app.before_first_request
 def first_request():
@@ -141,10 +164,35 @@ def getHour():
     if request.method == 'GET':
         return render_template('statistics.html', hours=getRecord())
 
+###################################
+#設定更新/取得
+#POST:
+#   -capacity
+#   -lifetime
+#   -sleepTime
+#   -coolTime
+###################################
+@app.route('/setting', methods=['POST', 'GET'])
+def setting():
+    if request.method == 'POST':
+        #設定更新
+        try:
+            capacity = int((request.json['capacity']))
+            lifetime = int((request.json['lifetime']))
+            sleepTime = int((request.json['sleepTime']))
+            coolTime = int((request.json['coolTime']))
+        except Exception as e:
+            print "エラー:"
+            print 'type:' + str(type(e))
+            print 'args:' + str(e.args)
+            print 'message:' + e.message
+    return jsonify(ResultSet=json.dumps(getReturn()))
+
 #生存期間を超えた人を消す
 def killinRoom():
     if len(inRoom) >= 1:
         delta = datetime.now(timezone('Asia/Tokyo')) - inRoom[0]
+        lifetime = Setting().lifeTime
         if delta.total_seconds() > lifetime:
             #削除
             print "kill!!!!!"
@@ -158,7 +206,7 @@ def getReturn():
     strRoom = []
     for i in inRoom:
         strRoom.append(i.strftime('%Y-%m-%d %H:%M:%S'))
-    ret = {"capacity": capacity}
+    ret = Setting().getDict()
     ret.update({"inRoomNum": len(inRoom)})
     ret.update({"inRoom": strRoom})
     return ret

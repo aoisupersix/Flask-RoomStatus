@@ -20,7 +20,15 @@ function setRecord(record) {
  */
  function makeChart() {
   //hoursが空かどうか
-  if(hours.length > 0){
+  var kara = true;
+  for(var i = 0;i<hours.length;i++){
+    if(hours[i] > 0){
+      kara = false;
+      break;
+    }
+  }
+
+  if(hours.length > 0 && !kara){
     //データ項目作成
     dataLabels = new Array(hours.length);
     for(var i=0; i<dataLabels.length;i++){
@@ -32,7 +40,7 @@ function setRecord(record) {
       sum += hours[i];
     }
     $("#sum").html("合計利用者:<strong>" + sum + "</strong>")
-    
+
     //チャート作成
     var ctx = document.getElementById('statistics').getContext("2d");
     var myBarChart = new Chart(ctx, {
@@ -71,7 +79,7 @@ function setRecord(record) {
     });
   }else {
     //空
-    $("#message").html("自動では更新されません。手動で更新してください。<br><strong>統計情報がありません</strong>");
+    $("#message").html("自動では更新されません。手動で更新してください。<br><br><strong>統計情報がありません</strong>");
   }
 
  }
