@@ -66,6 +66,10 @@ inRoom = []
 def first_request():
     db.create_all()
 
+@app.before_first_request
+def first_request():
+    db.create_all()
+
 ###################################
 #ルート
 #GET:
