@@ -41,19 +41,19 @@ class Setting():
     #生存期間[s]
     lifeTime = 60 * 60
     #デバイス側の設定
-    sleepTime = 3.0
     coolTime = 3.0
+    avgNum = 10
+    threshold = 60
 
     def getDict(self):
-        return {"capacity": self.capacity, "lifetime": self.lifeTime, "sleepTime": self.sleepTime, "coolTime": self.coolTime}
+        return {"capacity": self.capacity, "lifetime": self.lifeTime, "coolTime": self.coolTime, "avgNum": self.avgNum, "threshold": self.threshold}
 
-    def setSettings(self, cap, life, sleep, cool):
+    def setSettings(self, cap, life, cool, avg, thre):
         self.capacity = cap
         self.lifeTime = life
-        self.sleepTime = sleep
         self.coolTime = cool
-        print "self.capacity:" + str(self.capacity)
-
+        self.avgNum = avg
+        self.threshold = thre
 
 #部屋にいる人の管理
 inRoom = []
@@ -177,9 +177,10 @@ def setting():
         try:
             capacity = int((request.json['capacity']))
             lifetime = int((request.json['lifetime']))
-            sleepTime = float((request.json['sleepTime']))
             coolTime = float((request.json['coolTime']))
-            settings.setSettings(capacity, lifetime, sleepTime, coolTime)
+            avgNum = float((request.json['avgNum']))
+            threshold = float((request.json['threshold']))
+            settings.setSettings(capacity, lifetime, coolTime, avgNum, threshold)
         except Exception as e:
             print "エラー:"
             print 'type:' + str(type(e))

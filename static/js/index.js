@@ -45,8 +45,9 @@ function init() {
     var data = JSON.stringify({
       "capacity": $("#InputCapacity").val(),
       "lifetime": $("#InputLifeTime").val(),
-      "sleepTime": $("#InputSleepTime").val(),
-      "coolTime": $("#InputCoolTime").val()
+      "coolTime": $("#InputCoolTime").val(),
+      "avgNum": $("#InputAvgNum").val(),
+      "threshold": $("#InputThreshold").val()
     });
     $.ajax({
       type: 'POST',
@@ -115,13 +116,15 @@ function init() {
       success:function(ret){
         var cap = JSON.parse(ret.ResultSet).capacity;
         var life = JSON.parse(ret.ResultSet).lifetime;
-        var sleep = JSON.parse(ret.ResultSet).sleepTime;
         var cool = JSON.parse(ret.ResultSet).coolTime;
+        var avg = JSON.parse(ret.ResultSet).avgNum;
+        var thre = JSON.parse(ret.ResultSet).threshold;
         $("#InputCapacity").val(cap);
         $("#InputLifeTime").val(life);
         $("#InputUpdateTime").val(updateTime);
-        $("#InputSleepTime").val(sleep);
         $("#InputCoolTime").val(cool);
+        $("#InputAvgNum").val(avg);
+        $("#InputThreshold").val(thre);
         $("#settingModal").modal('show');
       }
     });
