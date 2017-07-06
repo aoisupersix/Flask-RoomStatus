@@ -41,9 +41,9 @@ class Setting():
     #生存期間[s]
     lifeTime = 60 * 60
     #デバイス側の設定
-    coolTime = 3.0
-    avgNum = 10
-    threshold = 60
+    coolTime = 3.0 #測距センサの判定間隔
+    avgNum = 10 #測距センサの平均化回数
+    threshold = 60 #測距センサの閾値
 
     def getDict(self):
         return {"capacity": self.capacity, "lifetime": self.lifeTime, "coolTime": self.coolTime, "avgNum": self.avgNum, "threshold": self.threshold}
@@ -85,6 +85,7 @@ def add():
     if request.method == 'POST':
         killinRoom()
         num = int((request.json['num']))
+        #num人追加
         for i in range(num):
             d = datetime.now(timezone('Asia/Tokyo'))
             inRoom.append(d)
@@ -107,9 +108,10 @@ def addTime():
     if request.method == 'POST':
         killinRoom()
         unixtime = int((request.json['unixtime']))
-        addDate = datetime.fromtimestamp(unixtime, tz=timezone('Asia/Tokyo'))
+        addDate = datetime.fromtimestamp(unixtime, tz=timezone('Asia/Tokyo')) #timestamp -> datetime
         addRecord(addDate)
         print "time:" + str(addDate)
+        #inRoomの時刻順が狂わないよう挿入
         if len(inRoom) > 0:
             for i, room in enumerate(inRoom):
                 if addDate <= room:
@@ -167,8 +169,9 @@ def getHour():
 #POST:
 #   -capacity
 #   -lifetime
-#   -sleepTime
 #   -coolTime
+#   -avgNum
+#   -threshold
 ###################################
 @app.route('/setting', methods=['POST', 'GET'])
 def setting():
@@ -201,7 +204,7 @@ def killinRoom():
     print "killinRoom:"
     showStatus()
 
-#レスポンスを作成
+#レスポンスjsonを作成
 def getReturn():
     strRoom = []
     for i in inRoom:
